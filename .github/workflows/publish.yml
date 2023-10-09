@@ -24,7 +24,7 @@ jobs:
       
     # Publish as single exe
     - name: Publish
-      run: dotnet publish ReolinkRestart.sln --configuration $BUILD_CONFIG --runtime win-x86 -p:PublishSingleFile=true --no-self-contained
+      run: dotnet publish ReolinkRestart.sln -c $BUILD_CONFIG -r win-x86 -p:PublishSingleFile=true --no-self-contained
 
     # Upload assets to release
     #- name: Upload Release Asset
