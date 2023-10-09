@@ -27,8 +27,8 @@ jobs:
       run: dotnet publish -r win-x86 --configuration $BUILD_CONFIG -p:PublishSingleFile=true --no-self-contained
 
     # Upload assets to release
-    - name: Upload Release Asset
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #run:
-        #gh release upload <release_tag> <a_file>
+    #- name: Upload Release Asset
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #  run:
+    #    gh release upload <release_tag> <a_file>
