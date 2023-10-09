@@ -5,35 +5,44 @@ namespace ReolinkRestart
 {
     public class ReolinkRestartApplicationContext : ApplicationContext
     {
+        private readonly IReolinkRestartService reolinkRestartService;
         private NotifyIcon trayIcon;
-        private ReolinkRestartService service = new ReolinkRestartService();
         private Timer menuUpdateTimer = new Timer();
         private ToolStripLabel nextRestartMenuLabel;
 
-        public ReolinkRestartApplicationContext()
+        public ReolinkRestartApplicationContext(IReolinkRestartService reolinkRestartService)
         {
-            nextRestartMenuLabel = new ToolStripLabel($"Next restart:");
+            this.reolinkRestartService = reolinkRestartService;
+
+            Application.ApplicationExit += Application_ApplicationExit;
 
             trayIcon = new NotifyIcon
             {
                 Icon = Resources.AppIcon,
                 Visible = true,
-                ContextMenuStrip = new ContextMenuStrip()
-                {
-                    Items =
-                    {
-                        nextRestartMenuLabel,
-                        new ToolStripSeparator(),
-                        new ToolStripMenuItem("Exit", null, Exit)
-                    }
-                }
+                ContextMenuStrip = BuildMenu()
             };
 
             menuUpdateTimer.Interval = 1000;
             menuUpdateTimer.Tick += MenuUpdateTimer_Tick;
             menuUpdateTimer.Start();
 
-            Task.Run(() => service.Start());
+            Task.Run(() => reolinkRestartService.Start());
+        }
+
+        private ContextMenuStrip BuildMenu()
+        {
+            nextRestartMenuLabel = new ToolStripLabel($"Next restart:");
+
+            return new ContextMenuStrip()
+            {
+                Items =
+                    {
+                        nextRestartMenuLabel,
+                        new ToolStripSeparator(),
+                        new ToolStripMenuItem("Exit", null, Exit)
+                    }
+            };
         }
 
         private void MenuUpdateTimer_Tick(object? sender, EventArgs e)
@@ -43,18 +52,22 @@ namespace ReolinkRestart
 
         private TimeSpan GetNextRestart()
         {
-            if (!service.NextRestartAtUtc.HasValue)
+            if (!reolinkRestartService.NextRestartAtUtc.HasValue)
             {
                 return TimeSpan.Zero;
             }
 
-            return service.NextRestartAtUtc.Value - DateTime.UtcNow;
+            return reolinkRestartService.NextRestartAtUtc.Value - DateTime.UtcNow;
         }
 
         private void Exit(object? sender, EventArgs e)
         {
-            trayIcon.Visible = false;
             Application.Exit();
+        }
+
+        private void Application_ApplicationExit(object? sender, EventArgs e)
+        {
+            trayIcon.Visible = false;
         }
     }
 }

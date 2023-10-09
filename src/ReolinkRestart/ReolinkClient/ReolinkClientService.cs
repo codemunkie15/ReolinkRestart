@@ -1,18 +1,25 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using ReolinkRestart.Settings;
 using Vanara.PInvoke;
 
-namespace ReolinkRestart
+namespace ReolinkRestart.ReolinkClient
 {
-    public class ReolinkClient
+    public class ReolinkClientService : IReolinkClientService
     {
         private const string ReolinkProcessName = "Reolink";
-        private const string ReolinkExeLocation = @"C:\Users\callu\AppData\Local\Programs\Reolink\Reolink.exe";
+
+        private readonly ISettingsService settingsService;
+
+        public ReolinkClientService(ISettingsService settingsService)
+        {
+            this.settingsService = settingsService;
+        }
 
         public void Start()
         {
-            Process.Start(ReolinkExeLocation);
-            Thread.Sleep(3000);
+            Process.Start(settingsService.Settings!.ReolinkExecutableFilePath);
+            Thread.Sleep(settingsService.Settings!.FullscreenDelaySeconds * 1000);
             SetFullScreen();
         }
 
@@ -37,8 +44,7 @@ namespace ReolinkRestart
             if (process != null)
             {
                 User32.GetWindowRect(process.MainWindowHandle, out var windowRect);
-                Cursor.Position = new Point(windowRect.Right - 50, windowRect.Bottom - 40);
-                //User32.mouse_event(User32.MOUSEEVENTF.MOUSEEVENTF_LEFTDOWN | User32.MOUSEEVENTF.MOUSEEVENTF_LEFTUP, )
+                Cursor.Position = new Point(windowRect.Right - settingsService.Settings!.FullscreenXOffset, windowRect.Bottom - settingsService.Settings!.FullscreenYOffset);
                 User32.SendInput(1, new[] {
                     new User32.INPUT {
                         mi = new User32.MOUSEINPUT

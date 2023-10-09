@@ -1,40 +1,48 @@
 ﻿using System.Timers;
+using ReolinkRestart.ReolinkClient;
+using ReolinkRestart.Settings;
 using Timer = System.Timers.Timer;
 
 namespace ReolinkRestart
 {
-    public class ReolinkRestartService
+    public class ReolinkRestartService : IReolinkRestartService
     {
-        private const int RestartIntervalMinutes = 1;
-
         public DateTime? NextRestartAtUtc { get; private set; }
 
-        private ReolinkClient reolinkClient = new();
-        private Timer restartTimer = new Timer();
+        private ISettingsService settingsService;
+        private IReolinkClientService reolinkClientService;
+        private Timer restartTimer;
+
+        public ReolinkRestartService(IReolinkClientService reolinkClientService, ISettingsService settingsService)
+        {
+            this.reolinkClientService = reolinkClientService;
+            this.settingsService = settingsService;
+            this.restartTimer = new Timer();
+        }
 
         public void Start()
         {
-            if (!reolinkClient.IsClientRunning())
-            {
-                reolinkClient.Start();
-            }
-
-            restartTimer.Interval = RestartIntervalMinutes * 60 * 1000;
+            restartTimer.Interval = settingsService.Settings!.RestartIntervalMinutes * 60 * 1000;
             restartTimer.Elapsed += RestartTimer_Elapsed;
             restartTimer.Start();
             SetNextRestartAtUtc();
+
+            if (!reolinkClientService.IsClientRunning())
+            {
+                reolinkClientService.Start();
+            }
         }
 
         private void RestartTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             SetNextRestartAtUtc();
-            reolinkClient.Terminate();
-            reolinkClient.Start();
+            reolinkClientService.Terminate();
+            reolinkClientService.Start();
         }
 
         private void SetNextRestartAtUtc()
         {
-            NextRestartAtUtc = DateTime.UtcNow.AddMinutes(RestartIntervalMinutes);
+            NextRestartAtUtc = DateTime.UtcNow.AddMinutes(settingsService.Settings.RestartIntervalMinutes);
         }
     }
 }
