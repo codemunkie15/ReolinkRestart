@@ -1,4 +1,4 @@
-# EFCore.ChangeTriggers
+# ReolinkRestart
 
 A tool that restarts the Reolink client on a schedule to reset out-of-sync camera streams.
 
