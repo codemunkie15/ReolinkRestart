@@ -1,6 +1,6 @@
 # ReolinkRestart
 
-A tool that restarts the Reolink client on a schedule to reset out-of-sync camera streams.
+A tool that restarts the Reolink client, in full screen mode, on a schedule to reset out-of-sync camera streams.
 
 ## Installation
 
