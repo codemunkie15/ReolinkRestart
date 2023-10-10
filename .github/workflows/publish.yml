@@ -17,11 +17,13 @@ jobs:
 
     steps:
 
-    - name: Set environment variables
+    - name: Set environment variable
       shell: bash
-      run: |
-        echo "APP_NAME=ReolinkRestart" >> $GITHUB_ENV
-        echo "PUBLISH_DIR=$APP_NAME-${{github.ref_name}}-${{matrix.target}}" >> $GITHUB_ENV
+      run: echo "APP_NAME=ReolinkRestart" >> $GITHUB_ENV
+
+    - name: Set environment variable
+      shell: bash
+      run: echo "PUBLISH_DIR=${{env.APP_NAME}}-${{github.ref_name}}-${{matrix.target}}" >> $GITHUB_ENV
 
     - name: Checkout
       uses: actions/checkout@v3
@@ -33,7 +35,7 @@ jobs:
     
     - name: Rename executable
       shell: bash
-      run: mv ${{env.PUBLISH_DIR}}/${{env.APP_NAME}}.exe ${{env.PUBLISH_DIR}}/${{env.PUBLISH_DIR}}.exe
+      run: mv '${{env.PUBLISH_DIR}}/${{env.APP_NAME}}.exe' '${{env.PUBLISH_DIR}}/${{env.PUBLISH_DIR}}.exe'
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
