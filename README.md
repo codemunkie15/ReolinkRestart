@@ -4,13 +4,14 @@ A tool that restarts the Reolink client on a schedule to reset out-of-sync camer
 
 ## Installation
 
-1. Download the latest executable from the releases here.
-2. Run the executable.
-3. Optionally, add the executable to your Startup folder.
+1. Download the latest executable from the [releases](https://github.com/codemunkie15/ReolinkRestart/releases).
+2. Extract the executable.
+3. Run the executable.
+4. Optionally, add the executable to your Startup folder.
 
 ## Options
 
-Options can be changed by modifying the generated `settings.json` file.
+Options can be changed by modifying the generated `settings.json` file and restarting the application.
 
 * **ReolinkExecutableFilePath** - The path where your Reolink client executable is stored.
 * **RestartIntervalMinutes** - The restart interval in minutes.
