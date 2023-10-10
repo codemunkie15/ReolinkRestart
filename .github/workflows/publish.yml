@@ -30,22 +30,16 @@ jobs:
       with:
         fetch-depth: 0 # Get all history to allow automatic versioning using MinVer
 
-    - name: Publish
+    - name: Publish solution
       run: dotnet publish -o "${{env.PUBLISH_DIR}}" --configuration Release --runtime ${{matrix.target}} -p:PublishSingleFile=true --no-self-contained
     
-    - name: Rename executable
+    - name: Zip assets
       shell: bash
-      run: mv '${{env.PUBLISH_DIR}}/${{env.APP_NAME}}.exe' '${{env.PUBLISH_DIR}}/${{env.PUBLISH_DIR}}.exe'
-
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-artifact
-        path: ./
+      run: 7z a -tzip "${{env.PUBLISH_DIR}}.zip" "${{env.PUBLISH_DIR}}/*.exe"
     
-    - name: Upload Release Assets
+    - name: Upload assets to release
       uses: softprops/action-gh-release@v1
       with:
-        files: ${{env.PUBLISH_DIR}}/${{env.PUBLISH_DIR}}.exe
+        files: "${{env.PUBLISH_DIR}}.zip"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
