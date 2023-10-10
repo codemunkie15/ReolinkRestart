@@ -15,32 +15,31 @@ jobs:
       
     runs-on: ${{matrix.os}}
     
+    env:
+      APP_NAME: 'ReolinkRestart'
+      PUBLISH_DIR: '${{env.APP_NAME}}-${{github.ref_name}}-${{matrix.target}}'
+
     steps:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0 # Get all history to allow automatic versioning using MinVer
-        
-    # Install the .NET SDK
-    #- name: Setup .NET
-    #  uses: actions/setup-dotnet@v3
-      
-    # Publish as single exe
+
     - name: Publish
-      shell: bash
-      run: |
-        release_name="ReolinkRestart-${{github.ref_name}}-${{matrix.target}}"
-        dotnet publish -o "$release_name" --configuration Release --runtime ${{matrix.target}} -p:PublishSingleFile=true --no-self-contained
+      run: dotnet publish -o "${{env.PUBLISH_DIR}}" --configuration Release --runtime ${{matrix.target}} -p:PublishSingleFile=true --no-self-contained
     
-    # Upload artifacts
-    - uses: actions/upload-artifact@v3
+    - name: Rename executable
+      shell: bash
+      run: mv ${{env.PUBLISH_DIR}}/${{env.APP_NAME}}.exe ${{env.PUBLISH_DIR}}/${{env.PUBLISH_DIR}}.exe
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
       with:
         name: build-artifact
         path: ./
     
-    # Upload assets to release
-    - name: Upload Release Asset
+    - name: Upload Release Assets
       uses: softprops/action-gh-release@v1
       with:
-        files: "**.exe"
+        files: ${{env.PUBLISH_DIR}}/${{env.PUBLISH_DIR}}.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
