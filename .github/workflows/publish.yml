@@ -26,9 +26,9 @@ jobs:
       
     # Publish as single exe
     - name: Publish
+      shell: bash
       run: |
         release_name="ReolinkRestart-${{github.ref_name}}-${{matrix.target}}"
-        
         dotnet publish -o "$release_name" --configuration Release --runtime ${{matrix.target}} -p:PublishSingleFile=true --no-self-contained
 
     # Upload assets to release
