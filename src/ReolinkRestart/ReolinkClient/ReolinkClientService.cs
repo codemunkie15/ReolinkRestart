@@ -19,8 +19,11 @@ namespace ReolinkRestart.ReolinkClient
         public void Start()
         {
             Process.Start(settingsService.Settings!.ReolinkExecutableFilePath);
-            Thread.Sleep(settingsService.Settings!.FullscreenDelaySeconds * 1000);
-            SetFullScreen();
+            if (settingsService.Settings!.UseFullscreen)
+            {
+                Thread.Sleep(settingsService.Settings!.FullscreenDelaySeconds * 1000);
+                SetFullScreen();
+            }
         }
 
         public void Terminate()

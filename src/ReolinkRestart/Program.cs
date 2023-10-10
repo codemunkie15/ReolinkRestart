@@ -2,14 +2,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ReolinkRestart.ReolinkClient;
 using ReolinkRestart.Settings;
-using ReolinkRestart.Ui;
 
 namespace ReolinkRestart
 {
     internal static class Program
     {
-        private static UiMessageHandler uiMessageHandler = new();
-
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -54,17 +51,17 @@ namespace ReolinkRestart
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            uiMessageHandler.ShowMessage("Error", ((Exception)e.ExceptionObject).Message);
+            MessageBox.Show(((Exception)e.ExceptionObject).Message, "Error");
         }
 
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            uiMessageHandler.ShowMessage("Error", e.Exception.Message);
+            MessageBox.Show(e.Exception.Message, "Error");
         }
 
         private static void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
-            uiMessageHandler.ShowMessage("Error", e.Exception.Message);
+            MessageBox.Show(e.Exception.Message, "Error");
         }
     }
 }
