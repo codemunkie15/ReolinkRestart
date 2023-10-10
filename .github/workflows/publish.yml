@@ -6,9 +6,14 @@ on:
       - published    # Run the workflow when a new GitHub release is published
 
 jobs:
-  build:
+  release:
+    name: Release
+    strategy:
+      matrix:
+        os: [windows-latest]
+        target: [win-x64, win-x86]
       
-    runs-on: windows-latest
+    runs-on: ${{matrix.os}}
     
     steps:
     - uses: actions/checkout@v3
@@ -21,11 +26,15 @@ jobs:
       
     # Publish as single exe
     - name: Publish
-      run: dotnet publish --configuration Release --runtime win-x86 -p:PublishSingleFile=true --no-self-contained
+      run: |
+        release_name="ReolinkRestart-${{github.ref_name}}-${{matrix.target}}"
+        
+        dotnet publish -o "$release_name" --configuration Release --runtime ${{matrix.target}} -p:PublishSingleFile=true --no-self-contained
 
     # Upload assets to release
     - name: Upload Release Asset
+      uses: softprops/action-gh-release@v1
+      with:
+        files: "ReolinkRestart*.exe"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run:
-        gh release upload ${{github.ref_name}} **\*.exe
