@@ -4,7 +4,7 @@
     {
         void Start();
 
-        void Terminate();
+        void Terminate(bool waitForExit = false);
 
         bool IsClientRunning();
 

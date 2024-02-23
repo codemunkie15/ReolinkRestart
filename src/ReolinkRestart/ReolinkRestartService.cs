@@ -36,7 +36,7 @@ namespace ReolinkRestart
         private void RestartTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             SetNextRestartAtUtc();
-            reolinkClientService.Terminate();
+            reolinkClientService.Terminate(true);
             reolinkClientService.Start();
         }
 

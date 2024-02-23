@@ -26,10 +26,16 @@ namespace ReolinkRestart.ReolinkClient
             }
         }
 
-        public void Terminate()
+        public void Terminate(bool waitForExit = false)
         {
             var process = GetClientProcess();
+
             process?.CloseMainWindow();
+
+            if (waitForExit)
+            {
+                process?.WaitForExit();
+            }
         }
 
         public bool IsClientRunning()
