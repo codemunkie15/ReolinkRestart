@@ -29,10 +29,7 @@ namespace ReolinkRestart.ReolinkClient
         public void Terminate()
         {
             var process = GetClientProcess();
-            if (process is not null)
-            {
-                process.Kill();
-            }
+            process?.CloseMainWindow();
         }
 
         public bool IsClientRunning()
@@ -59,7 +56,7 @@ namespace ReolinkRestart.ReolinkClient
             }
         }
 
-        private Process? GetClientProcess()
+        private static Process? GetClientProcess()
         {
             return Process.GetProcessesByName(ReolinkProcessName).FirstOrDefault();
         }
