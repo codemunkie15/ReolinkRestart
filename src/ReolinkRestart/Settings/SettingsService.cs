@@ -28,16 +28,12 @@ namespace ReolinkRestart.Settings
 
         private void CreateSettings()
         {
-            var settings = new Settings
-            {
-                ReolinkExecutableFilePath = @"%localAppData%\Programs\Reolink\Reolink.exe",
-                RestartIntervalMinutes = 60,
-                UseFullscreen = true,
-                FullscreenDelaySeconds = 4,
-                FullscreenXOffset = 50,
-                FullscreenYOffset = 40
-            };
+            var settings = new Settings();
+            WriteSettings(settings);
+        }
 
+        private void WriteSettings(Settings settings)
+        {
             var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(SettingsFileName, json);
         }
@@ -46,6 +42,9 @@ namespace ReolinkRestart.Settings
         {
             var json = File.ReadAllText(SettingsFileName);
             Settings = JsonSerializer.Deserialize<Settings>(json)!;
+
+            // Write the settings back in-case there are new options
+            WriteSettings(Settings);
 
             Settings!.ReolinkExecutableFilePath = Environment.ExpandEnvironmentVariables(Settings.ReolinkExecutableFilePath);
         }

@@ -2,16 +2,18 @@
 {
     public class Settings
     {
-        public required string ReolinkExecutableFilePath { get; set; }
+        public string ReolinkExecutableFilePath { get; set; } = @"%localAppData%\Programs\Reolink\Reolink.exe";
 
-        public required int RestartIntervalMinutes { get; set; }
+        public int RestartIntervalMinutes { get; set; } = 60;
 
-        public required bool UseFullscreen { get; set; }
+        public bool UseFullscreen { get; set; } = true;
 
-        public required int FullscreenDelaySeconds { get; set; }
+        public int FullscreenDelaySeconds { get; set; } = 4;
 
-        public required int FullscreenXOffset { get; set; }
+        public int FullscreenXOffset { get; set; } = 50;
 
-        public required int FullscreenYOffset { get; set; }
+        public int FullscreenYOffset { get; set; } = 40;
+
+        public bool ReolinkClientGracefulExit { get; set; } = true;
     }
 }

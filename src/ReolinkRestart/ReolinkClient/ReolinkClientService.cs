@@ -30,11 +30,21 @@ namespace ReolinkRestart.ReolinkClient
         {
             var process = GetClientProcess();
 
-            process?.CloseMainWindow();
-
-            if (waitForExit)
+            if (process != null)
             {
-                process?.WaitForExit();
+                if (settingsService.Settings!.ReolinkClientGracefulExit)
+                {
+                    process.CloseMainWindow();
+                }
+                else
+                {
+                    process.Kill();
+                }
+
+                if (waitForExit)
+                {
+                    process.WaitForExit();
+                }
             }
         }
 
